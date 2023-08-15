@@ -8,11 +8,12 @@ from sklearn.svm import SVC
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-import os
 
 from sklearn.metrics.pairwise import cosine_similarity
 
 from multiprocessing import Pool, cpu_count
+
+import os
 
 def calculate_cosine_similarity(args):
 
@@ -28,7 +29,7 @@ def calculate_cosine_similarity(args):
 			'class_trip': class_trip, 'class_yelp': class_yelp}
 
 
-def parallel_cosine_similarity(df,tfidf_matrix, size_trip, size_yelp):
+def parallel_cosine_similarity(df, tfidf_matrix, size_trip, size_yelp):
 
 	num_docs = tfidf_matrix.shape[0]
 
@@ -82,7 +83,7 @@ if __name__ == '__main__':
 
 		tfidf_matrix = vectorizer.fit_transform(df['review_clean'])
 
-		similarity_df = parallel_cosine_similarity(tfidf_matrix, size_trip, size_yelp)
+		similarity_df = parallel_cosine_similarity(df, tfidf_matrix, size_trip, size_yelp)
 
 		similarity_df = similarity_df.sort_vales(by='similarity', ascending=False)
 
