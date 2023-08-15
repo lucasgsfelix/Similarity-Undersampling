@@ -8,6 +8,7 @@ from sklearn.svm import SVC
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+import os
 
 from sklearn.metrics.pairwise import cosine_similarity
 
