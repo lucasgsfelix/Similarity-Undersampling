@@ -54,29 +54,27 @@ if __name__ == '__main__':
 
 	amount_instances = int(sys.argv[1])
 
+	df = pd.read_table("trip_advisor_dataset.csv", sep=';')
+
+	df_yelp = pd.read_table("manual_reviews.csv", sep=';')
+
+	df['dataset'] = 'TripAdvisor'
+
+	df_yelp['dataset'] = 'Yelp'
+
+	tripadvisor_info = {
+							"Work": len(df[df['trip type'] == 1])/len(df),
+							"Leisure": len(df[df['trip type'] == 0])/len(df)
+
+					   }
+
+	size_trip, size_yelp = len(df), len(df_yelp)
+
+	df = pd.concat([df, df_yelp]).reset_index(drop=True)
+
+	df = df[['text', 'trip type', 'dataset']]
 
 	if not "similarity_df.csv" in os.listdir():
-
-		df = pd.read_table("trip_advisor_dataset.csv", sep=';')
-
-		df_yelp = pd.read_table("manual_reviews.csv", sep=';')
-
-		df['dataset'] = 'TripAdvisor'
-
-		df_yelp['dataset'] = 'Yelp'
-
-
-		tripadvisor_info = {
-								"Work": len(df[df['trip type'] == 1])/len(df),
-								"Leisure": len(df[df['trip type'] == 0])/len(df)
-
-						   }
-
-		df = pd.concat([df, df_yelp]).reset_index(drop=True)
-
-		size_trip, size_yelp = len(df), len(df_yelp)
-
-		df = df[['text', 'trip type']]
 
 		df['review_clean'] = hero.clean(df['text'])
 
@@ -86,13 +84,15 @@ if __name__ == '__main__':
 
 		similarity_df = parallel_cosine_similarity(df, tfidf_matrix, size_trip, size_yelp)
 
-		similarity_df = similarity_df.sort_vales(by='similarity', ascending=False)
+		similarity_df = similarity_df.sort_values(by='similarity', ascending=False)
 
 		similarity_df.to_csv("similarity_df.csv", sep=';', index=False)
 
 	else:
 
 		similarity_df = pd.read_table("similarity_df.csv", sep=';')
+
+	df = df[['text', 'trip type', 'dataset']]
 
 	amount_work_instances = int(np.ceil(amount_instances * tripadvisor_info['Work']))
 
@@ -108,4 +108,4 @@ if __name__ == '__main__':
 							((df.index.isin(work_instances)) | (df.index.isin(leisure_instances)))]
 
 
-	selected_instances.to_csv("dataset_" + amount_instances + "_trip_advisor.csv", sep=';', index=False)
+	selected_instances.to_csv("dataset_" + str(amount_instances) + "_trip_advisor.csv", sep=';', index=False)
