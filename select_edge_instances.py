@@ -37,7 +37,7 @@ def parallel_cosine_similarity(df, tfidf_matrix, size_trip, size_yelp):
 	combinations = [(i, j, tfidf_matrix,
 					df.iloc[i]['trip type'],
 					df.iloc[j]['trip type'])
-					for i in range(size_trip) for j in range(size_trip, size_trip + size_yelp)]
+					for i in range(size_trip) for j in range(size_trip, (size_trip + size_yelp))]
 
 	with Pool(cpu_count()) as pool:
 
