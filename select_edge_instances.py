@@ -8,6 +8,7 @@ from sklearn.svm import SVC
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+import tqdm
 
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -40,7 +41,7 @@ def parallel_cosine_similarity(df, tfidf_matrix, size_trip, size_yelp):
 
 	with Pool(cpu_count()) as pool:
 
-		similarities = pool.map(calculate_cosine_similarity, combinations)
+		similarities = list(tqdm.tqdm(pool.imap(calculate_cosine_similarity, combinations)))
 
 	return pd.DataFrame(similarities)
 
