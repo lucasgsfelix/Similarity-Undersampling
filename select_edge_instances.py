@@ -82,7 +82,7 @@ if not "similarity_df.csv" in os.listdir():
 
 
 
-	for partial_df in np.array_split(df[df['dataset'] != 'Yelp'], 100):	
+	for partial_df in tqdm.tqdm(np.array_split(df[df['dataset'] != 'Yelp'], 100)):	
 
 
 		similarity_df = parallel_cosine_similarity(partial_df, df[df['dataset'] == 'Yelp'])
