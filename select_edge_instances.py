@@ -18,7 +18,7 @@ import os
 
 def calculate_cosine_similarity(args):
 
-	i, j, tfidf_matrix, class_trip, class_yelp = args
+	i, j, class_trip, class_yelp = args
 
 	vec1 = tfidf_matrix[i]
 
@@ -30,11 +30,11 @@ def calculate_cosine_similarity(args):
 			'class_trip': class_trip, 'class_yelp': class_yelp}
 
 
-def parallel_cosine_similarity(df, tfidf_matrix, size_trip, size_yelp):
+def parallel_cosine_similarity(df, size_trip, size_yelp):
 
 	num_docs = tfidf_matrix.shape[0]
 
-	combinations = [(i, j, tfidf_matrix,
+	combinations = [(i, j,
 					df.iloc[i]['trip type'],
 					df.iloc[j]['trip type'])
 					for i in range(size_trip) for j in range(size_trip, (size_trip + size_yelp))]
@@ -50,62 +50,62 @@ def parallel_cosine_similarity(df, tfidf_matrix, size_trip, size_yelp):
 import sys
 
 
-if __name__ == '__main__':
-
-	amount_instances = int(sys.argv[1])
-
-	df = pd.read_table("trip_advisor_dataset.csv", sep=';')
-
-	df_yelp = pd.read_table("manual_reviews.csv", sep=';')
-
-	df['dataset'] = 'TripAdvisor'
-
-	df_yelp['dataset'] = 'Yelp'
-
-	tripadvisor_info = {
-							"Work": len(df[df['trip type'] == 1])/len(df),
-							"Leisure": len(df[df['trip type'] == 0])/len(df)
-
-					   }
-
-	size_trip, size_yelp = len(df), len(df_yelp)
-
-	df = pd.concat([df, df_yelp]).reset_index(drop=True)
-
-	df = df[['text', 'trip type', 'dataset']]
-
-	if not "similarity_df.csv" in os.listdir():
-
-		df['review_clean'] = hero.clean(df['text'])
-
-		vectorizer = TfidfVectorizer()
-
-		tfidf_matrix = vectorizer.fit_transform(df['review_clean'])
-
-		similarity_df = parallel_cosine_similarity(df, tfidf_matrix, size_trip, size_yelp)
-
-		similarity_df = similarity_df.sort_values(by='similarity', ascending=False)
-
-		similarity_df.to_csv("similarity_df.csv", sep=';', index=False)
-
-	else:
-
-		similarity_df = pd.read_table("similarity_df.csv", sep=';')
-
-	df = df[['text', 'trip type', 'dataset']]
-
-	amount_work_instances = int(np.ceil(amount_instances * tripadvisor_info['Work']))
-
-	amount_leisure_instances = int(np.ceil(amount_instances * tripadvisor_info['Leisure']))
-
-	## mantendo a mesma distribuição
-	work_instances = similarity_df[similarity_df['class_trip'] == 1].head(amount_work_instances)['doc_trip'].values
-
-	leisure_instances = similarity_df[similarity_df['class_trip'] == 0].head(amount_leisure_instances)['doc_trip'].values
 
 
-	selected_instances = df[(df['dataset'] == 'TripAdvisor') &
-							((df.index.isin(work_instances)) | (df.index.isin(leisure_instances)))]
+amount_instances = 10000
+
+df = pd.read_table("trip_advisor_dataset.csv", sep=';')
+
+df_yelp = pd.read_table("manual_reviews.csv", sep=';')
+
+df['dataset'] = 'TripAdvisor'
+
+df_yelp['dataset'] = 'Yelp'
+
+tripadvisor_info = {
+			"Work": len(df[df['trip type'] == 1])/len(df),
+			"Leisure": len(df[df['trip type'] == 0])/len(df)
+
+		   }
+
+size_trip, size_yelp = len(df), len(df_yelp)
+
+df = pd.concat([df, df_yelp]).reset_index(drop=True)
+
+df = df[['text', 'trip type', 'dataset']]
+
+if not "similarity_df.csv" in os.listdir():
+
+	df['review_clean'] = hero.clean(df['text'])
+
+	vectorizer = TfidfVectorizer()
+
+	tfidf_matrix = vectorizer.fit_transform(df['review_clean'])
+
+	similarity_df = parallel_cosine_similarity(df, size_trip, size_yelp)
+
+	similarity_df = similarity_df.sort_values(by='similarity', ascending=False)
+
+	similarity_df.to_csv("similarity_df.csv", sep=';', index=False)
+
+else:
+
+	similarity_df = pd.read_table("similarity_df.csv", sep=';')
+
+df = df[['text', 'trip type', 'dataset']]
+
+amount_work_instances = int(np.ceil(amount_instances * tripadvisor_info['Work']))
+
+amount_leisure_instances = int(np.ceil(amount_instances * tripadvisor_info['Leisure']))
+
+## mantendo a mesma distribuição
+work_instances = similarity_df[similarity_df['class_trip'] == 1].head(amount_work_instances)['doc_trip'].values
+
+leisure_instances = similarity_df[similarity_df['class_trip'] == 0].head(amount_leisure_instances)['doc_trip'].values
 
 
-	selected_instances.to_csv("dataset_" + str(amount_instances) + "_trip_advisor.csv", sep=';', index=False)
+selected_instances = df[(df['dataset'] == 'TripAdvisor') &
+						((df.index.isin(work_instances)) | (df.index.isin(leisure_instances)))]
+
+
+selected_instances.to_csv("dataset_" + str(amount_instances) + "_trip_advisor.csv", sep=';', index=False)
