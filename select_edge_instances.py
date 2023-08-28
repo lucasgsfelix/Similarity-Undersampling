@@ -30,14 +30,14 @@ def calculate_cosine_similarity(args):
 			'class_trip': class_trip, 'class_yelp': class_yelp}
 
 
-def parallel_cosine_similarity(df, size_trip, size_yelp):
+def parallel_cosine_similarity(df_trip, df_yelp):
 
 	num_docs = tfidf_matrix.shape[0]
 
-	combinations = [(i, j,
-					df.iloc[i]['trip type'],
-					df.iloc[j]['trip type'])
-					for i in range(size_trip) for j in range(size_trip, (size_trip + size_yelp))]
+	combinations = [(index_i, index_j,
+					df_trip[(df_trip.index == index_i)]['trip type'].values[0],
+					df_yelp[(df_yelp.index == index_j)]['trip type'].values[0])
+					for index_i in df_trip.index for index_j in df_yelp.index]
 
 	with Pool(cpu_count()) as pool:
 
@@ -68,8 +68,6 @@ tripadvisor_info = {
 
 		   }
 
-size_trip, size_yelp = len(df), len(df_yelp)
-
 df = pd.concat([df, df_yelp]).reset_index(drop=True)
 
 df = df[['text', 'trip type', 'dataset']]
@@ -80,17 +78,27 @@ if not "similarity_df.csv" in os.listdir():
 
 	vectorizer = TfidfVectorizer()
 
-	tfidf_matrix = vectorizer.fit_transform(df['review_clean'])
+	tfidf_matrix = vectorizer.fit_transform(df['review_clean'])	
 
-	similarity_df = parallel_cosine_similarity(df, size_trip, size_yelp)
 
-	similarity_df = similarity_df.sort_values(by='similarity', ascending=False)
 
-	similarity_df.to_csv("similarity_df.csv", sep=';', index=False)
+	for partial_df in np.array_split(df[df['dataset'] != 'Yelp'], 100):	
 
-else:
 
-	similarity_df = pd.read_table("similarity_df.csv", sep=';')
+		similarity_df = parallel_cosine_similarity(partial_df, df[df['dataset'] == 'Yelp'])
+
+		#similarity_df = similarity_df.sort_values(by='similarity', ascending=False)
+
+		if index == 0:
+
+			similarity_df.to_csv("similarity_df.csv", sep=';', header=True, index=False, mode='w')
+
+		else:
+
+			similarity_df.to_csv("similarity_df.csv", sep=';', header=False, index=False, mode='a')
+
+
+similarity_df = pd.read_table("similarity_df.csv", sep=';')
 
 df = df[['text', 'trip type', 'dataset']]
 
