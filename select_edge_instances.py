@@ -36,10 +36,13 @@ def parallel_cosine_similarity(df_trip, df_yelp):
 
 	num_docs = tfidf_matrix.shape[0]
 
+	# list(itertools.product(a, b))
 	combinations = [(index_i, index_j,
 					df_trip[(df_trip.index == index_i)]['trip type'].values[0],
 					df_yelp[(df_yelp.index == index_j)]['trip type'].values[0])
 					for index_i in df_trip.index for index_j in df_yelp.index]
+
+	
 
 	with Pool(cpu_count()) as pool:
 
