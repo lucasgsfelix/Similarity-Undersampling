@@ -16,6 +16,8 @@ from multiprocessing import Pool, cpu_count
 
 import os
 
+import time
+
 def calculate_cosine_similarity(args):
 
 	i, j, class_trip, class_yelp = args
@@ -88,11 +90,12 @@ if not "similarity_df.csv" in os.listdir():
 
 		#similarity_df = similarity_df.sort_values(by='similarity', ascending=False)
 
+		start = time.time()
 		print("Escrevendo dados!")
 
 		similarity_df.to_parquet("Similarities/similarity_df_" + str(index) + ".csv")
 
-		print("Finaizado escrito!")
+		print("Finaizado escrito! ", time.time() - start)
 
 
 similarity_df = pd.read_table("similarity_df.csv", sep=';')
