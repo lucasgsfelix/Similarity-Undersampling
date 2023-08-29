@@ -82,20 +82,17 @@ if not "similarity_df.csv" in os.listdir():
 
 
 
-	for index, partial_df in enumerate(np.array_split(df[df['dataset'] != 'Yelp'], 100)):	
-
+	for index, partial_df in enumerate(np.array_split(df[df['dataset'] != 'Yelp'], 1000)):	
 
 		similarity_df = parallel_cosine_similarity(partial_df, df[df['dataset'] == 'Yelp'])
 
 		#similarity_df = similarity_df.sort_values(by='similarity', ascending=False)
 
-		if index == 0:
+		print("Escrevendo dados!")
 
-			similarity_df.to_csv("similarity_df.csv", sep=';', header=True, index=False, mode='w')
+		similarity_df.to_parquet("Similarities/similarity_df_" + str(index) + ".csv")
 
-		else:
-
-			similarity_df.to_csv("similarity_df.csv", sep=';', header=False, index=False, mode='a')
+		print("Finaizado escrito!")
 
 
 similarity_df = pd.read_table("similarity_df.csv", sep=';')
