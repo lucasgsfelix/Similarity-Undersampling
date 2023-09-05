@@ -85,9 +85,9 @@ if not "similarity_df.csv" in os.listdir():
 
 	tfidf_matrix = vectorizer.fit_transform(df['review_clean'])	
 
+	splits = np.array_split(df[df['dataset'] != 'Yelp'], 1000)
 
-
-	for index, partial_df in enumerate(np.array_split(df[df['dataset'] != 'Yelp'], 1000)):	
+	for index, partial_df in enumerate(splits[532:]):	
 
 		similarity_df = parallel_cosine_similarity(partial_df, df[df['dataset'] == 'Yelp'])
 
