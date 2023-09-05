@@ -87,7 +87,9 @@ if not "similarity_df.csv" in os.listdir():
 
 	splits = np.array_split(df[df['dataset'] != 'Yelp'], 1000)
 
-	for index, partial_df in enumerate(splits[532:]):	
+	for index, partial_df in enumerate(splits[532:]):
+
+		index += 532
 
 		similarity_df = parallel_cosine_similarity(partial_df, df[df['dataset'] == 'Yelp'])
 
