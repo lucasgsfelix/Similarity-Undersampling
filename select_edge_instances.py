@@ -98,7 +98,7 @@ if not "similarity_df.csv" in os.listdir():
 		start = time.time()
 		print("Escrevendo dados!")
 
-		similarity_df.to_parquet("Similarities/similarity_df_" + str(index) + ".parquet")
+		similarity_df.to_parquet("Similarities2/similarity_df_" + str(index) + ".parquet")
 
 		print("Finaizado escrito! ", time.time() - start)
 
