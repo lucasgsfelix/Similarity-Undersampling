@@ -35,13 +35,15 @@ if __name__ == '__main__':
 
 	similarity_df = pd.concat(similarities)
 
+	similarities = []
+
 	df = df[['text', 'trip type', 'dataset']]
 
 	amount_work_instances = int(np.ceil(amount_instances * tripadvisor_info['Work']))
 
 	amount_leisure_instances = int(np.ceil(amount_instances * tripadvisor_info['Leisure']))
 
-	similarities_df = similarity_df.sort_values(by='similarity', ascending=False)
+	similarity_df.sort_values(by='similarity', ascending=False, inplace=True)
 
 	## mantendo a mesma distribuição
 	work_instances = similarity_df[similarity_df['class_trip'] == 1].drop_duplicates(subset='doc_trip', keep='first')
