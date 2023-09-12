@@ -1,6 +1,6 @@
 import os
 
-import pandas as pandas
+import pandas as pd
 
 import tqdm
 
