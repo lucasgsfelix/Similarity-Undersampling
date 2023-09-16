@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
 	similarities = []
 
-	df = df[['text', 'trip type', 'dataset']]
+	df = df[['text', 'trip type', 'dataset', 'review_clean']]
 
 	parameters, complete_results = [], []
 
