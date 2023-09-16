@@ -129,9 +129,9 @@ if __name__ == '__main__':
 
 			size_tripadvisor = amount_work_instances + amount_leisure_instances
 
-			x_train, y_train = X[-size_tripadvisor:], df['trip type'][-size_tripadvisor: ]
+			x_train, y_train = X[-size_tripadvisor:], selected_instances['trip type'][-size_tripadvisor: ]
 
-			x_test, y_test = X[: size_yelp], df['trip type'][: size_yelp]
+			x_test, y_test = X[: size_yelp], selected_instances['trip type'][: size_yelp]
 
 			grid = GridSearchCV(estimator=pipe,
 			param_grid=[model_parameters],
