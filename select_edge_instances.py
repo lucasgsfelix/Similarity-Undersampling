@@ -75,7 +75,7 @@ tripadvisor_info = {
 
 df = pd.concat([df, df_yelp]).reset_index(drop=True)
 
-df = df[['text', 'trip type', 'dataset']]
+df = df[['text', 'trip type', 'dataset', 'review_clean']]
 
 if not "similarity_df.csv" in os.listdir():
 
