@@ -22,8 +22,8 @@ if __name__ == '__main__':
 	df = pd.concat([df, df_yelp]).reset_index(drop=True)
 
 	tripadvisor_info = {
-				"Work": len(df[df['trip type'] == 1])/len(df),
-				"Leisure": len(df[df['trip type'] == 0])/len(df)
+				"Work": len(df[(df['trip type'] == 1) & (df['dataset'] == 'TripAdvisor')])/len(df),
+				"Leisure": len(df[(df['trip type'] == 0) & (df['dataset'] == 'TripAdvisor')])/len(df)
 
 			   }
 
