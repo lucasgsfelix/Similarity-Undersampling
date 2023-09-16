@@ -117,9 +117,11 @@ if __name__ == '__main__':
 
 			leisure_instances = leisure_instances.head(amount_leisure_instances)['doc_trip'].values
 
-			selected_instances = df[(df['dataset'] == 'TripAdvisor') &
-									((df.index.isin(work_instances)) | (df.index.isin(leisure_instances)))]
+			selected_instances = df[(((df['dataset'] == 'TripAdvisor')) &
+						((df.index.isin(work_instances)) | (df.index.isin(leisure_instances)))) |
+						(df['dataset'] == 'Yelp')]
 
+			selected_instances.sort_values(by='dataset', ascending=False, inplace=True)
 			# treinando modelo
 			pipe = Pipeline(steps=[("model", LogisticRegression())])
 
