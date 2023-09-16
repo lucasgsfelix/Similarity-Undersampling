@@ -39,7 +39,7 @@ def tested_parameters(model):
 
 	return {
 	"LogisticRegression": {
-	'model__penalty': [None, 'l2'],
+	'model__penalty': ['none', 'l2'],
 	'model__C': [0.00001, 0.001, 0.1, 0.5, 1, 2, 10],
 	'model__tol': [1e-6, 1e-4, 1e-2, 1, 2, 10],
 	'model__fit_intercept': [True, False],
