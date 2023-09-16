@@ -42,7 +42,7 @@ def tested_parameters(model):
 	'model__tol': [1e-6, 1e-4, 1e-2, 1, 2, 10],
 	'model__fit_intercept': [True, False],
 	'model__solver': ['sag', 'saga'],
-	'model__max_iter': [10, 50, 100, 150, 1000, 2000],
+	'model__max_iter': [10, 50, 100, 150, 1000, 2000, 5000, 10000],
 	'model__n_jobs': [-1],
 	'model__class_weight': ['balanced', None]
 	}
