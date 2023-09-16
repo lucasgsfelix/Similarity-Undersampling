@@ -97,8 +97,10 @@ if __name__ == '__main__':
 
 		similarity_df.sort_values(by='similarity', ascending=similarity, inplace=True)
 
-		for amount_instances in [1000, 5000, 10000, 150000, 200000, 250000, 300000,
-								 350000, 400000, 450000, 500000, 550000, len(df)]:
+		print("Fim da ordenação de similaridades!")
+
+		for amount_instances in tqdm.tqdm([1000, 5000, 10000, 150000, 200000, 250000, 300000,
+						   350000, 400000, 450000, 500000, 550000, len(df)]):
 
 			amount_work_instances = int(np.ceil(amount_instances * tripadvisor_info['Work']))
 
@@ -117,7 +119,7 @@ if __name__ == '__main__':
 									((df.index.isin(work_instances)) | (df.index.isin(leisure_instances)))]
 
 			# treinando modelo
-			pipe = Pipeline(steps=[("model", LinearRegression())])
+			pipe = Pipeline(steps=[("model", LogisticRegression())])
 
 			vectorizer = TfidfVectorizer()
 
