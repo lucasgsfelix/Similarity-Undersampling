@@ -18,6 +18,8 @@ from sklearn.model_selection import KFold
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+from sklearn.metrics import f1_score, accuracy_score
+
 
 def retrieve_best_params(grid_results):
 
@@ -137,6 +139,8 @@ if __name__ == '__main__':
 			scoring=('f1_micro', 'f1_macro'),
 			return_train_score=True,
 			n_jobs=-1,
+			error_score=0,
+			verbose=0,
 			refit=False)
 
 			grid.fit(x_train, y_train)
