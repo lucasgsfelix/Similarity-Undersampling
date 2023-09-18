@@ -39,12 +39,12 @@ def tested_parameters(model):
 
 	return {
 	"LogisticRegression": {
-	'model__penalty': ['none', 'l2'],
-	'model__C': [0.00001, 0.001, 0.1, 0.5, 1, 2, 10],
-	'model__tol': [1e-6, 1e-4, 1e-2, 1, 2, 10],
-	'model__fit_intercept': [True, False],
-	'model__solver': ['sag', 'saga'],
-	'model__max_iter': [10, 50, 100, 150, 1000, 2000, 5000, 10000],
+	#'model__penalty': ['none', 'l2'],
+	#'model__C': [0.00001, 0.001, 0.1, 0.5, 1, 2, 10],
+	#'model__tol': [1e-6, 1e-4, 1e-2, 1, 2, 10],
+	#'model__fit_intercept': [True, False],
+	#'model__solver': ['sag', 'saga'],
+	#'model__max_iter': [10, 50, 100, 150, 1000, 2000, 5000, 10000],
 	'model__n_jobs': [-1],
 	'model__class_weight': ['balanced', None]
 	}
@@ -101,7 +101,8 @@ if __name__ == '__main__':
 
 		print("Fim da ordenação de similaridades!")
 
-		for amount_instances in tqdm.tqdm([1000, 5000, 10000, 150000, 200000, 250000, 300000,
+		for amount_instances in tqdm.tqdm([1000, 5000, 10000, 20000, 30000, 40000, 50000, 75000, 100000,
+						   150000, 200000, 250000, 300000,
 						   350000, 400000, 450000, 500000, 550000, len(df)]):
 
 			amount_work_instances = int(np.ceil(amount_instances * tripadvisor_info['Work']))
