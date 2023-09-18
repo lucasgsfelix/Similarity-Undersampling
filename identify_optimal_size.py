@@ -152,6 +152,10 @@ if __name__ == '__main__':
 
 			best_parameters = retrieve_best_params(grid_results)
 
+			best_parameters['less_similar'] = similarity
+
+			best_parameters['amount_instances'] = amount_instances
+
 			trained_model = LogisticRegression(**best_parameters).fit(x_train, y_train)
 
 			prediction = trained_model.predict(x_test)
