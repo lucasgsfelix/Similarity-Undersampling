@@ -165,15 +165,14 @@ if __name__ == '__main__':
 
 				fyts = y_train[index_train]
 
-
-				# estamos fazendo isso apenas sobre a base de dados do tripadvisor
-				prediction = model.predict(x_train[fold_test_index])
-
 				y_test_fold = y_train.loc[fold_test_index]
 
 				for balanced in [True, False]:
 
 					model = LogisticRegression(balanced=balanced).fit(fxts, fyts)
+
+					# estamos fazendo isso apenas sobre a base de dados do tripadvisor
+					prediction = model.predict(x_train[fold_test_index])
 
 
 					results = {
