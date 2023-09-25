@@ -117,7 +117,7 @@ if __name__ == '__main__':
 	## dados do yelp
 	#x_test, y_test = X[: size_yelp], df['trip type'][: size_yelp]
 
-	kfolds = StratifiedKFold(5).fit(x_train, y_train)
+	kfolds = StratifiedKFold(5)
 
 	folds_index = {fold: {'train': train_index, 'test': test_index}
 				  for fold, (train_index, test_index) in enumerate(kfolds.split(x_train, y_train))}
