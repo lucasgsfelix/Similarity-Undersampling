@@ -129,7 +129,7 @@ if __name__ == '__main__':
 
 	for fold in tqdm.tqdm(folds_index.items()):
 
-		fold_x_train, fold_y_train = x_train.loc[folds_index[fold]['train']], y_train.loc[folds_index[fold]['train']]
+		fold_x_train, fold_y_train = x_train[folds_index[fold]['train']], y_train.loc[folds_index[fold]['train']]
 
 		# if head is the less similar, if tail is the most similar
 		for func_used in ['head', 'tail']:
@@ -146,9 +146,9 @@ if __name__ == '__main__':
 					model = LogisticRegression(balanced=balanced).fit(fxts, fyts)
 
 					# estamos fazendo isso apenas sobre a base de dados do tripadvisor
-					prediction = model.predict(x_train.loc[folds_index[fold]['test']])
+					prediction = model.predict(x_train[folds_index[fold]['test']])
 
-					y_test_fold = x_train.iloc[x_train.loc[folds_index[fold]['test']]]
+					y_test_fold = y_train.loc[folds_index[fold]['test']]
 
 					results = {
 						'Model': 'LogisticRegression',
