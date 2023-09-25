@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
 			for amount_instances in tqdm.tqdm([1000, 5000, 10000, 20000, 30000, 40000, 50000, 75000, 100000,
 											   150000, 200000, 250000, 300000,
-											   350000, 400000, 450000, len(fold_x_train)]):
+											   350000, 400000, 450000, len(folds_index[fold]['train'])]):
 
 
 				if func_used == 'head':
