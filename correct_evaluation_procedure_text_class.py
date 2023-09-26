@@ -173,7 +173,7 @@ if __name__ == '__main__':
 
 				for balanced in [True, False]:
 
-					model = LogisticRegression(balanced=balanced).fit(fxts, fyts)
+					model = LogisticRegression(class_weight=balanced).fit(fxts, fyts)
 
 					# estamos fazendo isso apenas sobre a base de dados do tripadvisor
 					prediction = model.predict(x_train[fold_test_index])
