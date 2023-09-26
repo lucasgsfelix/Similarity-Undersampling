@@ -109,7 +109,9 @@ if __name__ == '__main__':
 	similarity_df.sort_values(by='similarity', ascending=True, inplace=True)
 
 	vectorizer = TfidfVectorizer()
-	X = vectorizer.fit_transform(df['review_clean'])
+
+	# estamos utilizando apenas o tripadvisor
+	X = vectorizer.fit_transform(df[df['dataset'] == 'TripAdvisor']['review_clean'])
 
 	## dados do trip advisor
 	x_train, y_train = X[-size_tripadvisor:], df['trip type'][-size_tripadvisor: ]
