@@ -83,7 +83,9 @@ if __name__ == '__main__':
 
 	size_yelp, size_tripadvisor = len(df_yelp), len(df)
 
-	df = pd.concat([df_yelp, df]).reset_index(drop=True)
+	df = pd.concat([df, df_yelp]).reset_index(drop=True)
+
+	#df = df.reset_index()
 
 
 	tripadvisor_info = {
@@ -114,10 +116,10 @@ if __name__ == '__main__':
 	X = vectorizer.fit_transform(df[df['dataset'] == 'TripAdvisor']['review_clean'])
 
 	## dados do trip advisor
-	x_train, y_train = X[-size_tripadvisor:], df[df['dataset'] == 'TripAdvisor']['trip type'][-size_tripadvisor: ]
+	x_train, y_train = X.head(size_tripadvisor), df[df['dataset'] == 'TripAdvisor']['trip type'].head(size_tripadvisor)
 
 	## dados do yelp
-	#x_test, y_test = X[: size_yelp], df['trip type'][: size_yelp]
+	x_test, y_test = X.tail(size_yelp), df['trip type'].tail(size_yelp)
 
 	kfolds = StratifiedKFold(5)
 
@@ -128,12 +130,12 @@ if __name__ == '__main__':
 	# se a similaridade for == True, então quer dizer temos aqueles que são menos similares
 	# se a similaridade for == False, então quer dizer que temos aqueles que são mais similares
 
-	complete_results = []
+	complete_results, yelp_results = [], []
 
 	for fold in tqdm.tqdm(folds_index.keys()):
 
 		# aqui estamos trabalhando com a indexação original do dataset, por isso eu somo pelo size_yelp
-		fold_test_index = folds_index[fold]['test'] + size_yelp
+		fold_test_index = folds_index[fold]['test']
 
 		# if head is the less similar, if tail is the most similar
 		for func_used in ['head', 'tail']:
@@ -162,7 +164,6 @@ if __name__ == '__main__':
 
 				# a indexação vinda da similaridade contém os dados do yelp, porém, a matriz de tf-idf não
 				# por esse motivo estamos "removendo" da soma o index do yelp
-				index_train  = index_train - size_yelp
 												   
 				fxts = x_train[index_train]
 
@@ -190,9 +191,27 @@ if __name__ == '__main__':
 						"test_base": "TripAdvisor"
 					}
 
+					prediction = model.predict(x_test)
+
+					results_yelp = {
+						'Model': 'LogisticRegression',
+						'f1-micro-yelp': f1_score(y_test, prediction, average='micro'),
+						'f1-macro-yelp': f1_score(y_test, prediction, average='macro'),
+						'order_by': func_used_string,
+						'model_train_balancing': balanced,
+						'fold': fold,
+						"amount_instances_train": amount_instances,
+						"test_base": "Yelp"
+					}
+
+					yelp_results.append(results_yelp)
 					complete_results.append(results)
 
 
 	df_complete = pd.concat(complete_results)
 
+	df_complete_yelp = pd.concat(yelp_results)
+
 	df_complete.to_csv("train_test_tripadvisor.csv", sep=';', index=False)
+
+	df_complete_yelp.to_csv("train_trip_test_yelp.csv", sep=';', index=False)
