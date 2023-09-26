@@ -114,7 +114,7 @@ if __name__ == '__main__':
 	X = vectorizer.fit_transform(df[df['dataset'] == 'TripAdvisor']['review_clean'])
 
 	## dados do trip advisor
-	x_train, y_train = X[-size_tripadvisor:], df['trip type'][-size_tripadvisor: ]
+	x_train, y_train = X[-size_tripadvisor:], df[df['dataset'] == 'TripAdvisor']['trip type'][-size_tripadvisor: ]
 
 	## dados do yelp
 	#x_test, y_test = X[: size_yelp], df['trip type'][: size_yelp]
@@ -132,7 +132,8 @@ if __name__ == '__main__':
 
 	for fold in tqdm.tqdm(folds_index.keys()):
 
-		fold_test_index = folds_index[fold]['test']
+		# aqui estamos trabalhando com a indexação original do dataset, por isso eu somo pelo size_yelp
+		fold_test_index = folds_index[fold]['test'] + size_yelp
 
 		# if head is the less similar, if tail is the most similar
 		for func_used in ['head', 'tail']:
@@ -151,10 +152,6 @@ if __name__ == '__main__':
 					# eu quero as X primeiro instâncias que não estão no teste
 					index_train = similarity_used[~similarity_used['doc_trip'].isin(fold_test_index)]['doc_trip'].head(amount_instances).values
 
-					fxts = x_train[index_train]
-
-					fyts = y_train[index_train]
-
 				else:
 
 					func_used_string = 'Mais Similares'
@@ -163,10 +160,15 @@ if __name__ == '__main__':
 
 					index_train = similarity_used[~similarity_used['doc_trip'].isin(fold_test_index)]['doc_trip'].tail(amount_instances).values
 
+				# a indexação vinda da similaridade contém os dados do yelp, porém, a matriz de tf-idf não
+				# por esse motivo estamos "removendo" da soma o index do yelp
+				index_train  = index_train - size_yelp
+												   
 				fxts = x_train[index_train]
 
 				fyts = y_train[index_train]
 
+				# aqui não é a indexação original, e sim uma indexação gerada pelo kfold
 				y_test_fold = y_train[fold_test_index]
 
 				for balanced in [True, False]:
