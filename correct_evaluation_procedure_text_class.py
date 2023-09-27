@@ -208,9 +208,9 @@ if __name__ == '__main__':
 					complete_results.append(results)
 
 
-	df_complete = pd.concat(complete_results)
+	df_complete = pd.DataFrame(complete_results)
 
-	df_complete_yelp = pd.concat(yelp_results)
+	df_complete_yelp = pd.DataFrame(yelp_results)
 
 	df_complete.to_csv("train_test_tripadvisor.csv", sep=';', index=False)
 
