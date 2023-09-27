@@ -172,7 +172,7 @@ if __name__ == '__main__':
 				# aqui não é a indexação original, e sim uma indexação gerada pelo kfold
 				y_test_fold = y_train[fold_test_index]
 
-				for balanced in [True, False]:
+				for balanced in ['balanced', None]:
 
 					model = LogisticRegression(class_weight=balanced).fit(fxts, fyts)
 
