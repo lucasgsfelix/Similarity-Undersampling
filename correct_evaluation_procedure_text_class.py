@@ -144,6 +144,9 @@ if __name__ == '__main__':
 											   150000, 200000, 250000, 300000,
 											   350000, 400000, 450000, len(folds_index[fold]['train'])]):
 
+				amount_work_instances = int(np.ceil(amount_instances * tripadvisor_info['Work']))
+
+				amount_leisure_instances = int(np.ceil(amount_instances * tripadvisor_info['Leisure']))
 
 				if func_used == 'head':
 
@@ -152,7 +155,14 @@ if __name__ == '__main__':
 					similarity_used = similarity_df.drop_duplicates(subset='doc_trip', keep='first')
 
 					# eu quero as X primeiro instâncias que não estão no teste
-					index_train = similarity_used[~similarity_used['doc_trip'].isin(fold_test_index)]['doc_trip'].head(amount_instances).values
+					index_train = similarity_used[~similarity_used['doc_trip'].isin(fold_test_index)]#['doc_trip'].head(amount_instances).values
+
+					work_instances = index_train[index_train['class_trip'] == 1]['doc_trip'].head(amount_work_instances).values
+
+					leisure_instances = index_train[index_train['class_trip'] == 0]['doc_trip'].head(amount_leisure_instances).values
+
+					## vai retornar as X instâncias mais/menos similares no geral
+					yelp_similarity = similarity_used['doc_trip'].head(amount_instances).values
 
 				else:
 
@@ -160,11 +170,21 @@ if __name__ == '__main__':
 
 					similarity_used = similarity_df.drop_duplicates(subset='doc_trip', keep='last')
 
-					index_train = similarity_used[~similarity_used['doc_trip'].isin(fold_test_index)]['doc_trip'].tail(amount_instances).values
+					index_train = similarity_used[~similarity_used['doc_trip'].isin(fold_test_index)]#['doc_trip'].head(amount_instances).values
+
+					## isso aqui é para garantir que a distribuição tá certa
+					work_instances = index_train[index_train['class_trip'] == 1]['doc_trip'].tail(amount_work_instances).values
+
+					leisure_instances = index_train[index_train['class_trip'] == 0]['doc_trip'].tail(amount_leisure_instances).values
+
+					## vai retornar as X instâncias mais/menos similares no geral
+					yelp_similarity = similarity_used['doc_trip'].tail(amount_instances).values
 
 				# a indexação vinda da similaridade contém os dados do yelp, porém, a matriz de tf-idf não
 				# por esse motivo estamos "removendo" da soma o index do yelp
 												   
+				index_train = np.append(work_instances, leisure_instances)
+
 				fxts = x_train[index_train]
 
 				fyts = y_train[index_train]
@@ -201,10 +221,34 @@ if __name__ == '__main__':
 						'model_train_balancing': balanced,
 						'fold': fold,
 						"amount_instances_train": amount_instances,
-						"test_base": "Yelp"
+						"test_base": "Yelp",
+						"model_geral": False
 					}
 
+
 					yelp_results.append(results_yelp)
+
+
+					### novo modelo sendo treinado
+					model = LogisticRegression(class_weight=balanced).fit(x_train[yelp_similarity], y_train[x_train[yelp_similarity]])
+
+					prediction = model.predict(x_test)
+
+					results_yelp = {
+						'Model': 'LogisticRegression',
+						'f1-micro-yelp': f1_score(y_test, prediction, average='micro'),
+						'f1-macro-yelp': f1_score(y_test, prediction, average='macro'),
+						'order_by': func_used_string,
+						'model_train_balancing': balanced,
+						'fold': fold,
+						"amount_instances_train": amount_instances,
+						"test_base": "Yelp",
+						"model_geral": True # com modelo geral queremos dizer que o modelo é treinado com as 1000 instâncias mais similares de toda a base
+					}
+
+
+					yelp_results.append(results_yelp)
+
 					complete_results.append(results)
 
 
