@@ -238,7 +238,7 @@ if __name__ == '__main__':
 
 
 					### novo modelo sendo treinado
-					model = LogisticRegression(class_weight=balanced).fit(x_train[yelp_similarity], y_train[x_train[yelp_similarity]])
+					model = LogisticRegression(class_weight=balanced).fit(x_train[yelp_similarity], y_train[yelp_similarity])
 
 					prediction = model.predict(x_test)
 
