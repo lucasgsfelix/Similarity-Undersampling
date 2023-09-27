@@ -161,8 +161,12 @@ if __name__ == '__main__':
 
 					leisure_instances = index_train[index_train['class_trip'] == 0]['doc_trip'].head(amount_leisure_instances).values
 
+					general_work_instances = similarity_used[similarity_used['class_trip'] == 1]['doc_trip'].head(amount_work_instances).values
+
+					general_leisure_instances = similarity_used[similarity_used['class_trip'] == 0]['doc_trip'].head(amount_leisure_instances).values
+
 					## vai retornar as X instâncias mais/menos similares no geral
-					yelp_similarity = similarity_used['doc_trip'].head(amount_instances).values
+					yelp_similarity = np.append(general_work_instances, general_leisure_instances)
 
 				else:
 
@@ -177,8 +181,12 @@ if __name__ == '__main__':
 
 					leisure_instances = index_train[index_train['class_trip'] == 0]['doc_trip'].tail(amount_leisure_instances).values
 
+					general_work_instances = similarity_used[similarity_used['class_trip'] == 1]['doc_trip'].tail(amount_work_instances).values
+
+					general_leisure_instances = similarity_used[similarity_used['class_trip'] == 0]['doc_trip'].tail(amount_leisure_instances).values
+
 					## vai retornar as X instâncias mais/menos similares no geral
-					yelp_similarity = similarity_used['doc_trip'].tail(amount_instances).values
+					yelp_similarity = np.append(general_work_instances, general_leisure_instances)
 
 				# a indexação vinda da similaridade contém os dados do yelp, porém, a matriz de tf-idf não
 				# por esse motivo estamos "removendo" da soma o index do yelp
