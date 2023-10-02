@@ -182,7 +182,7 @@ if __name__ == '__main__':
 					leisure_instances = index_train[index_train['class_trip'] == 0]['doc_trip'].tail(amount_leisure_instances).values
 
 					general_work_instances = similarity_used[similarity_used['class_trip'] == 1]['doc_trip'].tail(amount_work_instances).values
-
+a
 					general_leisure_instances = similarity_used[similarity_used['class_trip'] == 0]['doc_trip'].tail(amount_leisure_instances).values
 
 					## vai retornar as X instâncias mais/menos similares no geral
@@ -202,7 +202,10 @@ if __name__ == '__main__':
 
 				for balanced in ['balanced', None]:
 
-					model = LogisticRegression(class_weight=balanced).fit(fxts, fyts)
+					parameters = {'C': 0.001, 'fit_intercept': True, 'max_iter': 150, 
+						      'n_jobs': -1, 'penalty': None, 'solver': 'saga', 'tol': 1, 'class_weight': balanced}
+
+					model = LogisticRegression(**parameters).fit(fxts, fyts)
 
 					# estamos fazendo isso apenas sobre a base de dados do tripadvisor
 					prediction = model.predict(x_train[fold_test_index])
