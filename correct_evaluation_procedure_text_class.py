@@ -124,10 +124,10 @@ if __name__ == '__main__':
 	vectorizer.fit(df['review_clean'])
 
 	## dados do trip advisor
-	x_train, y_train = vectorizer.vectorizer(df[df['dataset'] == 'TripAdvisor']['review_clean'].values),  df[df['dataset'] == 'TripAdvisor']['trip type'].values
+	x_train, y_train = vectorizer.transform(df[df['dataset'] == 'TripAdvisor']['review_clean'].values),  df[df['dataset'] == 'TripAdvisor']['trip type'].values
 
 	## dados do yelp
-	x_test, y_test = vectorizer.vectorizer(df[df['dataset'] == 'Yelp']['review_clean'].values),  df[df['dataset'] == 'Yelp']['trip type'].values
+	x_test, y_test = vectorizer.transform(df[df['dataset'] == 'Yelp']['review_clean'].values),  df[df['dataset'] == 'Yelp']['trip type'].values
 
 	kfolds = StratifiedKFold(5)
 
