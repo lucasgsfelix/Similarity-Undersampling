@@ -182,7 +182,7 @@ if __name__ == '__main__':
 					leisure_instances = index_train[index_train['class_trip'] == 0]['doc_trip'].tail(amount_leisure_instances).values
 
 					general_work_instances = similarity_used[similarity_used['class_trip'] == 1]['doc_trip'].tail(amount_work_instances).values
-a
+
 					general_leisure_instances = similarity_used[similarity_used['class_trip'] == 0]['doc_trip'].tail(amount_leisure_instances).values
 
 					## vai retornar as X instâncias mais/menos similares no geral
