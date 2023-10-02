@@ -203,7 +203,7 @@ if __name__ == '__main__':
 				for balanced in ['balanced', None]:
 
 					parameters = {'C': 0.001, 'fit_intercept': True, 'max_iter': 150, 
-						      'n_jobs': -1, 'penalty': None, 'solver': 'saga', 'tol': 1, 'class_weight': balanced}
+						      'n_jobs': -1, 'solver': 'saga', 'tol': 1, 'class_weight': balanced}
 
 					model = LogisticRegression(**parameters).fit(fxts, fyts)
 
