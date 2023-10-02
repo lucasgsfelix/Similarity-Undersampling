@@ -140,9 +140,9 @@ if __name__ == '__main__':
 		# if head is the less similar, if tail is the most similar
 		for func_used in ['head', 'tail']:
 
-			for amount_instances in tqdm.tqdm([1000, 5000, 10000, 20000, 30000, 40000, 50000, 75000, 100000,
-											   150000, 200000, 250000, 300000,
-											   350000, 400000, 450000, len(folds_index[fold]['train'])]):
+			for amount_instances in tqdm.tqdm([1000]):#, 5000, 10000, 20000, 30000, 40000, 50000, 75000, 100000,
+								#			   150000, 200000, 250000, 300000,
+								#			   350000, 400000, 450000, len(folds_index[fold]['train'])]):
 
 				amount_work_instances = int(np.ceil(amount_instances * tripadvisor_info['Work']))
 
