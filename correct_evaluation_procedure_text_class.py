@@ -99,27 +99,35 @@ if __name__ == '__main__':
 	df = df[['text', 'trip type', 'dataset', 'review_clean']]
 
 	similarities = []
+	
+	if "similaridade_df.csv" not in os.listdir():
 
-	for file_name in tqdm.tqdm(os.listdir("Similarites")):
+		for file_name in tqdm.tqdm(os.listdir("Similarites")):
 
-		similarities.append(pd.read_parquet("Similarites/" + file_name))
+			similarities.append(pd.read_parquet("Similarites/" + file_name))
 
-	similarity_df = pd.concat(similarities)
+		similarity_df = pd.concat(similarities)
 
-	similarities = []
+		similarities = []
 
-	similarity_df.sort_values(by='similarity', ascending=True, inplace=True)
+		similarity_df.sort_values(by='similarity', ascending=True, inplace=True)
+
+		similarity_df.to_csv("similaridade_df.csv", sep=';', index=False)
+
+	else:
+	
+		similarity_df = pd.read_table("similaridade_df.csv", sep=';')
 
 	vectorizer = TfidfVectorizer()
 
 	# estamos utilizando apenas o tripadvisor
-	X = vectorizer.fit_transform(df['review_clean'])
+	vectorizer.fit(df['review_clean'])
 
 	## dados do trip advisor
-	x_train, y_train = X[: size_tripadvisor], df[df['dataset'] == 'TripAdvisor']['trip type'].values
+	x_train, y_train = vectorizer.vectorizer(df[df['dataset'] == 'TripAdvisor']['review_clean'].values),  df[df['dataset'] == 'TripAdvisor']['trip type'].values
 
 	## dados do yelp
-	x_test, y_test = X[-size_yelp:], df[df['dataset'] == 'Yelp']['trip type'].values
+	x_test, y_test = vectorizer.vectorizer(df[df['dataset'] == 'Yelp']['review_clean'].values),  df[df['dataset'] == 'Yelp']['trip type'].values
 
 	kfolds = StratifiedKFold(5)
 
@@ -140,7 +148,7 @@ if __name__ == '__main__':
 		# if head is the less similar, if tail is the most similar
 		for func_used in ['head', 'tail']:
 
-			for amount_instances in tqdm.tqdm([1000]):#, 5000, 10000, 20000, 30000, 40000, 50000, 75000, 100000,
+			for amount_instances in [1000]:#, 5000, 10000, 20000, 30000, 40000, 50000, 75000, 100000,
 								#			   150000, 200000, 250000, 300000,
 								#			   350000, 400000, 450000, len(folds_index[fold]['train'])]):
 
